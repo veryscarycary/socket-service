@@ -25,9 +25,7 @@ class Routes{
 
 		this.io.on('connection', (socket) => {
 
-      // socket.join('room' , () => {
-      //   io.to('room', 'a new user has joined the room'); // broadcast to everyone in the room
-      // });
+      socket.join('private room');
 
   			socket.on('username', (userName) => {
 
@@ -43,7 +41,7 @@ class Routes{
 
 		    socket.on('getMsg', (data) => {
           console.log(data, 'getting data')
-		    	socket.emit('sendMsg', {
+		    	this.io.in('private room').emit('sendMsg', {
 		    		msg: data.msg,
 		    		username: data.username
 		    	});

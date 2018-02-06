@@ -1,15 +1,17 @@
 const express = require('express');
 const http = require('http');
 const bodyParser = require('body-parser');
+const path = require('path');
 const io = require('socket.io');
 
-const Routes = require('./utils/routes');
+const Routes = require('../utils/routes');
+const config = require('../utils/config');
 
 class Server {
 
-    constructor() {
-        this.port =  process.env.PORT || 3000;
-        this.host = `localhost`;
+    constructor(port, host) {
+        this.port = port;
+        this.host = host;
 
         this.app = express();
         this.http = http.createServer(this.app);
@@ -19,7 +21,7 @@ class Server {
     appConfig() {
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({ extended: true }));
-        this.app.use(express.static(__dirname ));
+        this.app.use(express.static(path.join(__dirname, '/..')));
     }
 
     /* Including app Routes starts*/
@@ -40,5 +42,5 @@ class Server {
 
 }
 
-const app = new Server();
+const app = new Server(config.port, config.host);
 app.appExecute();

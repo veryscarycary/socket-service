@@ -33,12 +33,7 @@ class ChatUser {
 
     socket.on('sendMsg', (data) => {
       this.messages.push(data);
-      console.log('user List =>', this.userList);
-
-      var messageFeed = document.getElementById('messages');
-      var li = document.createElement('li');
-      li.innerHTML = `${data.username}: ${data.msg}`;
-      messageFeed.appendChild(li);
+      this.appendMessage(data);
     });
   }
 
@@ -46,20 +41,26 @@ class ChatUser {
   //   selectedUser === this.socketId ? alert("Can't message to yourself.") : this.selectedUser = selectedUser;
   // };
 
+  appendMessage(data) {
+    var messageFeed = document.getElementById('messages');
+    var li = document.createElement('li');
+    li.innerHTML = `${data.username}: ${data.msg}`;
+    messageFeed.appendChild(li);
+  };
 
   sendMsg(event) {
     event.preventDefault();
-    console.log(event, '<=event');
-
     var inputField = document.getElementById('m');
+    const messageObj = {
+      toid: this.selectedUser,
+      fromid: this.socketId,
+      username: this.username,
+      msg: inputField.value
+    };
 
+    console.log('m', inputField);
     if (inputField.value) {
-      socket.emit('getMsg', {
-        toid: this.selectedUser,
-        fromid: this.socketId,
-        username: this.username,
-        msg: inputField.value
-      });
+      socket.emit('getMsg', messageObj);
     }
 
     inputField.value = '';
